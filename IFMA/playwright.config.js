@@ -9,7 +9,7 @@ module.exports = defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : 1,
-  reporter: [[ 'html', { open: 'always' } ]],
+  reporter: [[ 'html', { open: 'never' } ]],
   use: {
     // Set base URL for all tests
     baseURL: 'https://admin.ifma-qa.devbyopeneyes.com',
