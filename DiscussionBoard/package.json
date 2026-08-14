@@ -1,13 +1,10 @@
 {
-  "name": "discussionboard-playwright",
+  "name": "DiscussionBoard",
   "version": "1.0.0",
-  "private": true,
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "test": "npx playwright test",
-    "show-report": "npx playwright show-report"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "devDependencies": {
-    "@playwright/test": "^1.40.0",
-    "dotenv": "^16.0.0"
-  }
+  "private": true
 }

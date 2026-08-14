@@ -34,8 +34,8 @@ test.describe.serial('User workflow grouped tests', () => {
         await context.close();
       });
 
-      // TC-1: Preview button should NOT be visible (per reverse case)
-      test(`[TC-1] Preview button not visible for ${user.email}`, async () => {
+      // ISE-6-TC-1: Preview button should NOT be visible (per reverse case)
+      test(`[ISE-6-TC-1] Preview button not visible for ${user.email}`, async () => {
         const preview = page.getByRole('button', { name: /Preview/i });
         const count = await preview.count();
         if (count === 0) {
@@ -46,8 +46,8 @@ test.describe.serial('User workflow grouped tests', () => {
         }
       });
 
-      // TC-2: Direct navigation to /assessment shows locked popup
-      test(`[TC-2] Assessment preview lock popup for ${user.email}`, async () => {
+      // ISE-6-TC-2: Direct navigation to /assessment shows locked popup
+      test(`[ISE-6-TC-2] Assessment preview lock popup for ${user.email}`, async () => {
         await page.goto('https://sat.ifma-qa.devbyopeneyes.com/assessment');
 
         const header = page.locator("//h2[contains(@class,'swal2-title')]");
@@ -60,12 +60,27 @@ test.describe.serial('User workflow grouped tests', () => {
         await expect(content).toHaveText('Assessment Preview is currently locked/unavailable.');
       });
 
-      // Additional: verify dashboard cards (keeps original behavior)
-      test(`[TC-3] Dashboard cards for ${user.email}`, async () => {
-        // After TC-2 the page might have a modal blocking interactions — navigate back home first
-        await page.goto('https://sat.ifma-qa.devbyopeneyes.com/landing-dashboard');
-        await dashboardPage.verifyLandingUrl();
-        await dashboardPage.verifyDashboardCards(user.expectedCards);
+      // ISE-6-TC-3: Verify user cannot access assessment preview content - click OK to redirect
+      test(`[ISE-6-TC-3] User cannot access assessment preview, clicks OK button for ${user.email}`, async () => {
+        await page.goto('https://sat.ifma-qa.devbyopeneyes.com/assessment');
+
+        // Verify the popup title
+        const header = page.locator("//h2[contains(@class,'swal2-title')]");
+        await expect(header).toBeVisible({ timeout: 15000 });
+        await expect(header).toHaveText('Assessment Preview Locked');
+
+        // Verify the popup content text
+        const content = page.locator("//div[contains(@class,'swal2-html-container')]");
+        await expect(content).toBeVisible({ timeout: 5000 });
+        await expect(content).toHaveText('Assessment Preview is currently locked/unavailable.');
+
+        // Find and click the OK button
+        const okButton = page.locator("//button[contains(@class,'swal2-confirm')]");
+        await expect(okButton).toBeVisible({ timeout: 5000 });
+        await okButton.click();
+
+        // Verify redirect to landing-dashboard
+        await expect(page).toHaveURL('https://sat.ifma-qa.devbyopeneyes.com/landing-dashboard', { timeout: 10000 });
       });
     });
   }
